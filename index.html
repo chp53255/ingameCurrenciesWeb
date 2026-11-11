@@ -49,8 +49,8 @@
   .mode .price { margin-top: 6px; font-size: 16px; color: var(--muted); }
   .mode .price b { color: var(--cream); font-size: 20px; }
 
-  .stage { display: flex; justify-content: center; margin: 14px 0; min-height: 190px; align-items: center; }
-  .box { width: 170px; height: 170px; border-radius: 22px; display: flex; flex-direction: column; align-items: center; justify-content: center;
+  .stage { display: flex; justify-content: center; margin: 14px 0; min-height: 260px; align-items: center; }
+  .box { width: 210px; height: 250px; border-radius: 22px; display: flex; flex-direction: column; align-items: center; justify-content: center;
     background: linear-gradient(145deg, #3a3670, #221f45); border: 2px solid var(--line); text-align: center; padding: 12px; }
   .box.premium { background: linear-gradient(145deg, #6b4e10, #2c2341); border-color: var(--gold); }
   .box .q { font-size: 72px; font-weight: 800; color: var(--muted); }
@@ -58,7 +58,9 @@
   .box.shake { animation: shake .55s ease-in-out infinite; }
   .box.result { animation: pop .35s ease-out; }
   .box .tier { font-size: 13px; font-weight: 800; letter-spacing: 2px; text-transform: uppercase; }
-  .box .item { font-size: 20px; font-weight: 800; margin-top: 6px; line-height: 1.2; }
+  .box .item { font-size: 18px; font-weight: 800; margin-top: 4px; line-height: 1.15; }
+  .box .portrait { width: 140px; height: 150px; object-fit: contain; border-radius: 10px; margin-bottom: 8px; }
+  .box .note { font-size: 12px; color: var(--muted); margin-top: 2px; }
   .box.t-Common { border-color: var(--common); background: linear-gradient(145deg, #3a3670, #221f45); } .box.t-Common .tier { color: var(--common); }
   .box.t-Rare { border-color: var(--rare); background: linear-gradient(145deg, #1d3a55, #221f45); } .box.t-Rare .tier { color: var(--rare); }
   .box.t-Epic { border-color: var(--epic); background: linear-gradient(145deg, #45225f, #221f45); } .box.t-Epic .tier { color: var(--epic); }
@@ -81,7 +83,9 @@
   .chip { border-radius: 999px; padding: 6px 12px; font-size: 14px; font-weight: 700; background: var(--panel); border: 1px solid var(--line); }
   .chip.Common { color: var(--common); } .chip.Rare { color: var(--rare); } .chip.Epic { color: var(--epic); } .chip.Legendary { color: var(--legendary); }
   .pulls { list-style: none; padding: 0; margin: 10px 0 0; display: flex; flex-direction: column; gap: 6px; }
-  .pulls li { display: flex; justify-content: space-between; background: var(--panel); border-radius: 10px; padding: 10px 12px; font-size: 15px; }
+  .pulls li { display: flex; justify-content: space-between; align-items: center; gap: 10px; background: var(--panel); border-radius: 10px; padding: 8px 12px; font-size: 15px; }
+  .pulls .who { display: flex; align-items: center; gap: 10px; }
+  .pulls img { width: 36px; height: 40px; object-fit: cover; border-radius: 6px; }
   .pulls .Common { color: var(--common); } .pulls .Rare { color: var(--rare); } .pulls .Epic { color: var(--epic); } .pulls .Legendary { color: var(--legendary); font-weight: 800; }
 
   .reveal { margin-top: 28px; border-top: 1px solid var(--line); padding-top: 18px; }
@@ -168,13 +172,34 @@ const CONFIG = {
       ]
     }
   ],
+  // Rarity follows how recently each person served: the most recent are rarest.
+  // img paths are relative to index.html; put the 15 files in an img/ folder.
   items: {
-    Legendary: ["Solar Crown", "Void Dragon Wings"],
-    Epic: ["Neon Katana", "Aurora Cape", "Phantom Mask"],
-    Rare: ["Chrome Visor", "Ember Boots", "Frost Trail", "Gold-Trim Jacket"],
-    Common: ["Gray Hoodie", "Sticker: GG", "Emote: Wave", "Spray: Smiley", "Brown Boots", "Blue Bandana"]
+    Legendary: [
+      { name: "Donald Trump",      note: "45th & 47th President", img: "img/trump.jpg" },
+      { name: "Joe Biden",         note: "46th President",        img: "img/biden.jpg" }
+    ],
+    Epic: [
+      { name: "Barack Obama",      note: "44th President",        img: "img/obama.jpg" },
+      { name: "George W. Bush",    note: "43rd President",        img: "img/bush.jpg" },
+      { name: "Bill Clinton",      note: "42nd President",        img: "img/clinton.jpg" }
+    ],
+    Rare: [
+      { name: "Ronald Reagan",     note: "40th President",        img: "img/reagan.jpg" },
+      { name: "Jimmy Carter",      note: "39th President",        img: "img/carter.jpg" },
+      { name: "John F. Kennedy",   note: "35th President",        img: "img/jfk.jpg" },
+      { name: "Theodore Roosevelt", note: "26th President",       img: "img/teddy-roosevelt.jpg" }
+    ],
+    Common: [
+      { name: "Ulysses S. Grant",  note: "18th President",        img: "img/grant.jpg" },
+      { name: "Abraham Lincoln",   note: "16th President",        img: "img/lincoln.jpg" },
+      { name: "Andrew Jackson",    note: "7th President",         img: "img/jackson.jpg" },
+      { name: "Thomas Jefferson",  note: "3rd President",         img: "img/jefferson.jpg" },
+      { name: "George Washington", note: "1st President",         img: "img/washington.jpg" },
+      { name: "Benjamin Franklin", note: "Founding Father (never President)", img: "img/franklin.jpg" }
+    ]
   },
-  storageKey: "gemstore-v2"
+  storageKey: "gemstore-v3"
 };
 const TIER_ORDER = ["Legendary", "Epic", "Rare", "Common"];
 
@@ -235,7 +260,8 @@ function pick(list) { return list[roll1000() % list.length]; }
 function drawPull(mode) {
   const roll = roll1000();
   const tier = mode.tiers.find(t => roll <= t.max).name;
-  return { tier, item: pick(CONFIG.items[tier]), roll };
+  const it = pick(CONFIG.items[tier]);
+  return { tier, item: it.name, note: it.note, img: it.img, roll };
 }
 
 function counts() {
@@ -316,7 +342,9 @@ function boxHTML(mode) {
   if (shaking) return `<div class="box shake${premium}" aria-label="Opening box"><span class="q">?</span></div>`;
   if (lastPull) {
     return `<div class="box result t-${lastPull.tier}">
-      <span class="tier">${lastPull.tier}</span><span class="item">${lastPull.item}</span></div>`;
+      <img class="portrait" src="${lastPull.img}" alt="${lastPull.item}" onerror="this.remove()">
+      <span class="tier">${lastPull.tier}</span><span class="item">${lastPull.item}</span>
+      <span class="note">${lastPull.note}</span></div>`;
   }
   return `<div class="box${premium}" aria-label="Unopened loot box"><span class="q">?</span></div>`;
 }
@@ -327,7 +355,7 @@ function openHTML() {
   const c = counts();
   const chips = TIER_ORDER.filter(t => c[t] > 0).map(t => `<span class="chip ${t}">${t} × ${c[t]}</span>`).join("");
   const recent = state.opened.slice().reverse()
-    .map(p => `<li><span class="${p.tier}">${p.item}</span><span class="${p.tier}">${p.tier}</span></li>`).join("");
+    .map(p => `<li><span class="who"><img src="${p.img}" alt="" onerror="this.remove()"><span class="${p.tier}">${p.item}</span></span><span class="${p.tier}">${p.tier}</span></li>`).join("");
 
   let action;
   if (canOpen > 0 || busy) {
@@ -361,6 +389,7 @@ function receiptHTML() {
   const mine = id => (m && m.id === id ? " mine" : "");
 
   const leftUSD = state.gems * usdPerGem();
+  const totalItems = TIER_ORDER.reduce((n, t) => n + CONFIG.items[t].length, 0);
   const pulled = TIER_ORDER.filter(t => c[t] > 0).map(t => `${c[t]} ${t}`).join(", ") || "nothing";
   const top = `<div class="receipt">
     <h1>Your receipt</h1>
@@ -372,6 +401,7 @@ function receiptHTML() {
       <tr><td>Real price of each box</td><td>${n ? fmtUSD(CONFIG.packUSD / n) : "—"}</td></tr>
       <tr class="warn"><td>Gems stuck in your account</td><td>${fmtInt(state.gems)} 💎 = ${fmtUSD(leftUSD)}</td></tr>
       <tr><td>What you got</td><td>${pulled}</td></tr>
+      <tr><td>Collection</td><td>${new Set(state.opened.map(p => p.item)).size} of ${totalItems} portraits</td></tr>
     </table>
   </div>`;
 
@@ -434,7 +464,7 @@ function modalHTML() {
     const lines = CONFIG.modes.map(m => `${m.name}: ` + m.tiers.map(t => `${t.name} ${t.pct}%`).join(", ")).join(". ");
     return `<div class="modal" data-action="close"><div class="sheet" role="dialog" aria-modal="true" aria-label="Probability disclosure">
       <p class="tiny">PROBABILITY DISCLOSURE. Item drop probabilities per loot box. ${lines}.
-      Gems are sold in Starter Packs of ${fmtInt(CONFIG.startGems)}. Items have no cash value. Rates may change at any time without notice.</p>
+      Rarity follows how recently each figure served; the most recent are rarest. Gems are sold in Starter Packs of ${fmtInt(CONFIG.startGems)}. Items have no cash value. Rates may change at any time without notice.</p>
       <div class="actions"><button class="ghost" data-action="close">Close</button></div>
     </div></div>`;
   }
@@ -515,6 +545,9 @@ setInterval(() => {
   const t = document.getElementById("timer");
   if (t) t.textContent = timerText();
 }, 1000);
+
+// Preload portraits so each reveal shows instantly.
+TIER_ORDER.forEach(t => CONFIG.items[t].forEach(it => { const im = new Image(); im.src = it.img; }));
 
 render();
 </script>

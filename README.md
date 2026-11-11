@@ -14,9 +14,26 @@ No real money changes hands. There is no backend and no tracking, and the page l
 | File | Purpose |
 | --- | --- |
 | `index.html` | The whole app: HTML, CSS and JavaScript in one file. |
+| `img/*.jpg` | The 15 portrait images, named exactly as listed below. |
 | `README.md` | This file. Optional on GitHub Pages. |
 
-There are **no dependencies**: no npm packages, no frameworks, no build step, no external fonts or scripts. Upload `index.html` as it is.
+There are **no code dependencies**: no npm packages, no frameworks, no build step, no external fonts or scripts. The only other files are the portraits.
+
+## The portraits
+
+Every loot box drops one portrait. Rarity follows how recently each person served, with the most recent rarest. Within a tier, each portrait is equally likely.
+
+| Tier | Portraits | File names in `img/` |
+| --- | --- | --- |
+| Legendary | Trump, Biden | `trump.jpg`, `biden.jpg` |
+| Epic | Obama, George W. Bush, Clinton | `obama.jpg`, `bush.jpg`, `clinton.jpg` |
+| Rare | Reagan, Carter, Kennedy, Theodore Roosevelt | `reagan.jpg`, `carter.jpg`, `jfk.jpg`, `teddy-roosevelt.jpg` |
+| Common | Grant, Lincoln, Jackson, Jefferson, Washington, Franklin | `grant.jpg`, `lincoln.jpg`, `jackson.jpg`, `jefferson.jpg`, `washington.jpg`, `franklin.jpg` |
+
+- File names are **case-sensitive** on GitHub Pages: `Carter.JPG` will not load as `carter.jpg`. A missing or misnamed image doesn't break the game; that portrait just shows its name without a picture.
+- **Size:** keep each image about 600 px tall or less. A phone decodes a 1920×2062 image to about 16 MB of memory, and the page preloads all 15.
+- **Rights:** a public GitHub Pages site republishes these images to anyone with the link. Check the artist's license or ask permission, and credit them in this README.
+- To change who is in which tier, edit `items` in `CONFIG` near the top of the script.
 
 ## Put it on GitHub Pages
 
