@@ -1,15 +1,22 @@
 # Gem Store
 
-A one-page loot box demo for COP 4910 Presentation 4. Each player gets a pretend $20 and buys one gem bundle. They open loot boxes until the presenters announce a code, then their phone shows a receipt in real dollars along with the true odds.
+A one-page loot box demo for COP 4910 Presentation 4. Every player starts with the same 2,000-gem Starter Pack and picks one of two modes:
+
+- **High Roller:** double the Legendary odds, fewer boxes.
+- **Standard:** standard odds, more boxes.
+
+Players open boxes one at a time until the presenters announce a code. Their phone then shows a receipt in real dollars, compares the two modes honestly, and reveals the odds.
 
 No real money changes hands. There is no backend and no tracking, and the page loads nothing from other sites. Everything runs on the player's phone.
 
-## Files
+## Files and dependencies
 
 | File | Purpose |
 | --- | --- |
 | `index.html` | The whole app: HTML, CSS and JavaScript in one file. |
 | `README.md` | This file. Optional on GitHub Pages. |
+
+There are **no dependencies**: no npm packages, no frameworks, no build step, no external fonts or scripts. Upload `index.html` as it is.
 
 ## Put it on GitHub Pages
 
@@ -18,6 +25,8 @@ No real money changes hands. There is no backend and no tracking, and the page l
 3. Go to **Settings › Pages**. Under **Build and deployment**, set Source to **Deploy from a branch**, the branch to `main`, and the folder to `/ (root)`. Save.
 4. Wait a minute or two. The site appears at `https://<your-username>.github.io/gem-store/`.
 5. Open that URL on your phone and play once to confirm it works.
+
+If you update `index.html` later, Pages republishes on its own within a minute or two.
 
 ## Make the QR code
 
@@ -34,27 +43,33 @@ Put the QR code **and** the plain URL on the cover slide, since some phone camer
 ## Running it in class
 
 - **Reveal code:** `RECEIPT`, and it isn't case-sensitive. Presenter B says it out loud at 3:00. To change it, edit `revealCode` near the top of the script.
-- **One purchase per player.** Each bundle leaves leftover gems on its own: 160, 180 and 220. Allowing a second purchase would break that, because 500 + 1,200 gems is exactly five boxes.
-- **Refreshing doesn't reset a phone.** Progress is saved in the browser, so a reload doesn't give anyone a second purchase.
+- **One mode per player.** The choice is locked once confirmed. Progress is saved in the browser, so refreshing doesn't reset the phone or let a player switch modes.
+- **One box at a time.** There is no "open all" button. Each tap opens a single box, and rarer pulls shake a little longer.
 - **To start over** (rehearsals, testing): add `?reset` to the URL, e.g. `https://<you>.github.io/gem-store/?reset`.
-- **The odds really are disclosed,** but only behind the tiny "Probability disclosure" link at the bottom. That's deliberate. At the reveal, ask who tapped it. The fine print also calls 0.5% "boosted" from a standard 0.25%, so the claim was technically true.
+- **The odds really are disclosed,** but only behind the tiny "Probability disclosure" link at the bottom. That's deliberate. At the reveal, ask who tapped it.
 - **The "offer ends" timer is fake.** It restarts every two minutes, and the receipt says so.
 
 ## Numbers the page uses
 
-These match the presentation doc and the slides. All of them are in `CONFIG` at the top of the script.
+These match the presentation doc and the slides. All of them are in `CONFIG` at the top of the script. The Starter Pack is 2,000 💎, and its hidden price is $19.99.
 
-| Bundle | Price | Boxes (340 💎 each) | Real cost per box | Gems left over |
-| --- | --- | --- | --- | --- |
-| 500 💎 | $4.99 | 1 | $4.99 | 160 ($1.60) |
-| 1,200 💎 | $9.99 | 3 | $3.33 | 180 ($1.50) |
-| 2,600 💎 | $19.99 | 7 | $2.86 | 220 ($1.69) |
+| | High Roller | Standard |
+| --- | --- | --- |
+| Box price | 850 💎 | 340 💎 |
+| Boxes per pack | 2 | 5 |
+| Gems left over | 300 ($3.00) | 300 ($3.00) |
+| Real cost per box opened | $9.99 | $4.00 |
+| Legendary / Epic / Rare / Common | 1 / 9 / 25 / 65% | 0.5 / 4.5 / 16 / 79% |
+| Chance of at least one Legendary per pack | 2.0% | 2.5% |
+| Average cost of one Legendary | about $1,000 | about $800 |
 
-Each box draws a number from 1 to 1,000 using the browser's cryptographic random number generator: Legendary 1–5 (0.5%), Epic 6–50 (4.5%), Rare 51–210 (16%), Common 211–1,000 (79%). If you change the odds, change the `max` and `pct` values together.
+High Roller doubles the odds per box but costs 2.5× as much per box, so it **lowers** the chance of a Legendary across a whole pack. That's the twist the receipt reveals.
+
+Each box draws a number from 1 to 1,000 using the browser's cryptographic random number generator. A tier wins when the roll is at or below its `max`, checked from Legendary down. If you change the odds, change `max` and `pct` together.
 
 ## Before presenting
 
-- [ ] Play through once on an iPhone and once on an Android phone.
+- [ ] Play through both modes on an iPhone and on an Android phone.
 - [ ] Test on the classroom Wi-Fi **and** on cellular data.
 - [ ] Run `?reset` on any phone you rehearsed with.
-- [ ] Bring the paper fallback (roll table and volunteer cards) in case the network fails.
+- [ ] Bring the paper fallback (both roll tables and volunteer cards) in case the network fails.
