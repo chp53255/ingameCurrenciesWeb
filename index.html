@@ -34,45 +34,48 @@
 
   h1 { font-size: 26px; margin: 0 0 14px; line-height: 1.2; }
   h2 { font-size: 20px; margin: 24px 0 10px; }
-  .sub { color: var(--muted); margin: -6px 0 16px; }
+  .sub { color: var(--muted); margin: -6px 0 18px; }
 
-  .bundles { display: flex; flex-direction: column; gap: 12px; }
-  .bundle { position: relative; display: flex; justify-content: space-between; align-items: center; width: 100%;
-    background: var(--panel); color: var(--cream); border: 1px solid var(--line); border-radius: 16px; padding: 22px 18px 18px; text-align: left; }
-  .bundle.best { border: 2px solid var(--gold); box-shadow: 0 0 24px rgba(242,182,50,.25); }
-  .bundle .badge { position: absolute; top: -11px; left: 14px; background: var(--muted); color: var(--bg); font-size: 12px; font-weight: 800;
+  .modes { display: flex; flex-direction: column; gap: 16px; }
+  .mode { position: relative; display: flex; flex-direction: column; gap: 6px; width: 100%; background: var(--panel); color: var(--cream);
+    border: 1px solid var(--line); border-radius: 18px; padding: 24px 18px 18px; text-align: left; }
+  .mode.featured { border: 2px solid var(--gold); background: linear-gradient(145deg, #3b2a12, #221F45 60%); box-shadow: 0 0 28px rgba(242,182,50,.3); }
+  .mode .badge { position: absolute; top: -11px; left: 14px; background: var(--muted); color: var(--bg); font-size: 12px; font-weight: 800;
     text-transform: uppercase; letter-spacing: 1px; padding: 3px 10px; border-radius: 999px; }
-  .bundle.best .badge { background: var(--gold); }
-  .bundle .gems { font-size: 26px; font-weight: 800; }
-  .bundle .price { background: var(--gold); color: var(--bg); font-weight: 800; padding: 8px 14px; border-radius: 10px; font-size: 18px; }
-  .note { color: var(--muted); font-size: 15px; margin-top: 14px; text-align: center; }
+  .mode.featured .badge { background: var(--gold); }
+  .mode .name { font-size: 28px; font-weight: 800; }
+  .mode .pitch { font-size: 17px; font-weight: 700; color: var(--gold); }
+  .mode:not(.featured) .pitch { color: var(--muted); }
+  .mode .price { margin-top: 6px; font-size: 16px; color: var(--muted); }
+  .mode .price b { color: var(--cream); font-size: 20px; }
 
-  .balance { text-align: center; margin: 8px 0 4px; }
-  .balance .big { font-size: 44px; font-weight: 800; }
-  .balance .small { color: var(--muted); font-size: 14px; }
-
-  .stage { display: flex; justify-content: center; margin: 18px 0; min-height: 190px; align-items: center; }
+  .stage { display: flex; justify-content: center; margin: 14px 0; min-height: 190px; align-items: center; }
   .box { width: 170px; height: 170px; border-radius: 22px; display: flex; flex-direction: column; align-items: center; justify-content: center;
     background: linear-gradient(145deg, #3a3670, #221f45); border: 2px solid var(--line); text-align: center; padding: 12px; }
+  .box.premium { background: linear-gradient(145deg, #6b4e10, #2c2341); border-color: var(--gold); }
   .box .q { font-size: 72px; font-weight: 800; color: var(--muted); }
+  .box.premium .q { color: var(--gold); }
   .box.shake { animation: shake .55s ease-in-out infinite; }
   .box.result { animation: pop .35s ease-out; }
   .box .tier { font-size: 13px; font-weight: 800; letter-spacing: 2px; text-transform: uppercase; }
   .box .item { font-size: 20px; font-weight: 800; margin-top: 6px; line-height: 1.2; }
-  .box.t-Common { border-color: var(--common); } .box.t-Common .tier { color: var(--common); }
+  .box.t-Common { border-color: var(--common); background: linear-gradient(145deg, #3a3670, #221f45); } .box.t-Common .tier { color: var(--common); }
   .box.t-Rare { border-color: var(--rare); background: linear-gradient(145deg, #1d3a55, #221f45); } .box.t-Rare .tier { color: var(--rare); }
   .box.t-Epic { border-color: var(--epic); background: linear-gradient(145deg, #45225f, #221f45); } .box.t-Epic .tier { color: var(--epic); }
   .box.t-Legendary { border-color: var(--legendary); background: linear-gradient(145deg, #6b4e10, #2c2341); box-shadow: 0 0 40px rgba(242,182,50,.6); }
   .box.t-Legendary .tier { color: var(--legendary); }
 
-  .actions { display: flex; gap: 10px; }
-  .cta { flex: 1; background: var(--gold); color: var(--bg); border: 0; border-radius: 14px; padding: 16px 12px; font-weight: 800; font-size: 18px; }
+  .count { text-align: center; color: var(--muted); font-size: 15px; margin: 0 0 12px; }
+  .count b { color: var(--cream); }
+  .cta { width: 100%; background: var(--gold); color: var(--bg); border: 0; border-radius: 14px; padding: 18px 12px; font-weight: 800; font-size: 19px; }
   .ghost { flex: 1; background: transparent; color: var(--cream); border: 1px solid var(--line); border-radius: 14px; padding: 16px 12px; font-weight: 700; font-size: 16px; }
+  .actions { display: flex; gap: 10px; }
+  .actions .cta { flex: 1; width: auto; }
 
   .hook { margin-top: 16px; background: #3a1d2b; border: 1px solid #7a3550; border-radius: 14px; padding: 14px; }
   .hook p { margin: 0 0 10px; font-weight: 700; }
-  .topup { display: flex; justify-content: space-between; align-items: center; background: var(--panel); border-radius: 10px; padding: 12px; opacity: .6; }
-  .topup .lock { font-size: 13px; color: var(--muted); }
+  .topup { display: flex; justify-content: space-between; align-items: center; gap: 8px; background: var(--panel); border-radius: 10px; padding: 12px; opacity: .6; }
+  .topup .lock { font-size: 13px; color: var(--muted); text-align: right; }
 
   .tally { display: flex; flex-wrap: wrap; gap: 8px; }
   .chip { border-radius: 999px; padding: 6px 12px; font-size: 14px; font-weight: 700; background: var(--panel); border: 1px solid var(--line); }
@@ -86,7 +89,7 @@
   .reveal form { display: flex; gap: 8px; }
   .reveal input { flex: 1; min-width: 0; font-size: 18px; padding: 12px; border-radius: 12px; border: 1px solid var(--line); background: var(--panel);
     color: var(--cream); text-transform: uppercase; letter-spacing: 2px; }
-  .reveal button { flex: 0 0 auto; }
+  .reveal button { flex: 0 0 auto; width: auto; padding: 12px 18px; }
   .reveal .err { color: #ff8fa3; font-size: 14px; margin-top: 8px; min-height: 18px; }
   .reveal form.wrong { animation: shake .35s ease-in-out 1; }
 
@@ -103,17 +106,22 @@
   /* Receipt */
   .receipt { background: var(--cream); color: var(--bg); border-radius: 18px; padding: 20px 18px; }
   .receipt h1 { color: var(--bg); margin-bottom: 4px; }
-  .receipt .spent { font-size: 48px; font-weight: 800; margin: 4px 0 14px; }
+  .receipt .spent { font-size: 48px; font-weight: 800; margin: 4px 0 2px; }
+  .receipt .spentnote { color: #5b5874; margin: 0 0 12px; }
   .receipt table { width: 100%; border-collapse: collapse; font-size: 15px; }
   .receipt td { padding: 9px 0; border-top: 1px dashed #cfc8b1; vertical-align: top; }
   .receipt td:last-child { text-align: right; font-weight: 800; padding-left: 10px; }
   .receipt .warn td:last-child { color: #a1262e; }
   .card { background: var(--panel); border: 1px solid var(--line); border-radius: 16px; padding: 16px; margin-top: 14px; }
   .card h2 { margin: 0 0 10px; }
-  .odds { width: 100%; border-collapse: collapse; font-size: 16px; }
-  .odds td { padding: 8px 0; border-top: 1px solid var(--line); }
-  .odds td:nth-child(2), .odds td:nth-child(3) { text-align: right; font-variant-numeric: tabular-nums; }
-  .stat { font-size: 30px; font-weight: 800; color: var(--gold); margin: 2px 0; }
+  .headline { font-size: 20px; font-weight: 800; color: var(--gold); margin: 0 0 12px; line-height: 1.3; }
+  .cmp { width: 100%; border-collapse: collapse; font-size: 15px; }
+  .cmp th { text-align: right; font-size: 13px; color: var(--muted); padding: 6px 0 6px 8px; font-weight: 700; }
+  .cmp th:first-child { text-align: left; padding-left: 0; }
+  .cmp td { padding: 8px 0; border-top: 1px solid var(--line); vertical-align: top; }
+  .cmp td:not(:first-child) { text-align: right; font-variant-numeric: tabular-nums; padding-left: 8px; font-weight: 700; }
+  .cmp .mine { color: var(--gold); }
+  .cmp td .why { display: block; font-size: 12px; color: var(--muted); font-weight: 400; }
   .muted { color: var(--muted); }
   .tricks { margin: 0; padding-left: 20px; } .tricks li { margin-bottom: 8px; }
   .footer { color: var(--muted); font-size: 13px; text-align: center; margin-top: 20px; }
@@ -134,20 +142,31 @@
 /* ===== Settings you may want to change ===== */
 const CONFIG = {
   revealCode: "RECEIPT",       // presenters say this out loud at the reveal
-  budget: 20,                  // pretend dollars per player
-  boxPrice: 340,               // gems per loot box
+  startGems: 2000,             // every player starts with this many gems...
+  packUSD: 19.99,              // ...which is what this "Starter Pack" costs (hidden until the receipt)
   timerSeconds: 120,           // fake "offer ends" countdown; silently restarts
-  bundles: [
-    { id: "s", gems: 500,  usd: 4.99,  badge: "Starter" },
-    { id: "m", gems: 1200, usd: 9.99,  badge: "+20% bonus" },
-    { id: "l", gems: 2600, usd: 19.99, badge: "Best value", best: true }
-  ],
-  // Roll 1..1000. A tier wins if the roll is <= its max (checked in this order).
-  tiers: [
-    { name: "Legendary", max: 5,    pct: 0.5 },
-    { name: "Epic",      max: 50,   pct: 4.5 },
-    { name: "Rare",      max: 210,  pct: 16 },
-    { name: "Common",    max: 1000, pct: 79 }
+  topUp: { gems: 500, usd: 4.99 },   // the locked offer shown when gems run out
+  // Each mode: price per box in gems, and tiers rolled on 1..1000
+  // (a tier wins if the roll is <= its max, checked in this order; pct is for display).
+  modes: [
+    {
+      id: "high", name: "High Roller", badge: "Premium", pitch: "2× Legendary odds!", featured: true, boxPrice: 850,
+      tiers: [
+        { name: "Legendary", max: 10,   pct: 1 },
+        { name: "Epic",      max: 100,  pct: 9 },
+        { name: "Rare",      max: 350,  pct: 25 },
+        { name: "Common",    max: 1000, pct: 65 }
+      ]
+    },
+    {
+      id: "std", name: "Standard", badge: "Classic", pitch: "Standard odds, more boxes", boxPrice: 340,
+      tiers: [
+        { name: "Legendary", max: 5,    pct: 0.5 },
+        { name: "Epic",      max: 50,   pct: 4.5 },
+        { name: "Rare",      max: 210,  pct: 16 },
+        { name: "Common",    max: 1000, pct: 79 }
+      ]
+    }
   ],
   items: {
     Legendary: ["Solar Crown", "Void Dragon Wings"],
@@ -155,12 +174,12 @@ const CONFIG = {
     Rare: ["Chrome Visor", "Ember Boots", "Frost Trail", "Gold-Trim Jacket"],
     Common: ["Gray Hoodie", "Sticker: GG", "Emote: Wave", "Spray: Smiley", "Brown Boots", "Blue Bandana"]
   },
-  storageKey: "gemstore-v1"
+  storageKey: "gemstore-v2"
 };
 const TIER_ORDER = ["Legendary", "Epic", "Rare", "Common"];
 
-/* ===== State (saved so a refresh doesn't reset or allow a second purchase) ===== */
-function freshState() { return { bundleId: null, gems: 0, opened: [], revealed: false, started: Date.now() }; }
+/* ===== State (saved so a refresh doesn't reset the run or allow switching modes) ===== */
+function freshState() { return { modeId: null, gems: CONFIG.startGems, opened: [], revealed: false, started: Date.now() }; }
 
 function load() {
   try {
@@ -192,11 +211,13 @@ let revealError = "";
 /* ===== Helpers ===== */
 const $app = document.getElementById("app");
 const fmtUSD = n => "$" + n.toFixed(2);
-const fmtWhole = n => "$" + Math.round(n).toLocaleString("en-US");
+const fmtWhole = n => "$" + Math.round(Math.round(n * 100) / 100).toLocaleString("en-US");
 const fmtInt = n => n.toLocaleString("en-US");
-const bundleById = id => CONFIG.bundles.find(b => b.id === id);
+const fmtPct = n => (Math.round(n * 10) / 10).toFixed(1) + "%";
+const modeById = id => CONFIG.modes.find(m => m.id === id);
 const sleep = ms => new Promise(r => setTimeout(r, ms));
 const reducedMotion = () => window.matchMedia && matchMedia("(prefers-reduced-motion: reduce)").matches;
+const usdPerGem = () => CONFIG.packUSD / CONFIG.startGems;
 
 // Unbiased integer in 1..1000 using the browser's cryptographic RNG.
 function roll1000() {
@@ -211,9 +232,9 @@ function roll1000() {
 }
 function pick(list) { return list[roll1000() % list.length]; }
 
-function drawPull() {
+function drawPull(mode) {
   const roll = roll1000();
-  const tier = CONFIG.tiers.find(t => roll <= t.max).name;
+  const tier = mode.tiers.find(t => roll <= t.max).name;
   return { tier, item: pick(CONFIG.items[tier]), roll };
 }
 
@@ -223,8 +244,21 @@ function counts() {
   return c;
 }
 
-// Cost of one box when buying a given bundle, ignoring stranded gems.
-function costPerBox(b) { return b.usd / Math.floor(b.gems / CONFIG.boxPrice); }
+// Everything the receipt needs to compare the two modes over one full pack.
+function modeStats(m) {
+  const boxes = Math.floor(CONFIG.startGems / m.boxPrice);
+  const left = CONFIG.startGems % m.boxPrice;
+  const pct = name => m.tiers.find(t => t.name === name).pct / 100;
+  const pL = pct("Legendary"), pE = pL + pct("Epic");
+  return {
+    boxes, left,
+    gemPriceUSD: m.boxPrice * usdPerGem(),
+    realPerBox: CONFIG.packUSD / boxes,
+    chanceLeg: 1 - Math.pow(1 - pL, boxes),
+    chanceEpicPlus: 1 - Math.pow(1 - pE, boxes),
+    costPerLeg: (1 / pL) * (CONFIG.packUSD / boxes)
+  };
+}
 
 function timerText() {
   const elapsed = Math.floor((Date.now() - state.started) / 1000);
@@ -233,10 +267,14 @@ function timerText() {
 }
 
 /* ===== Screens ===== */
+function headerHTML() {
+  return `<div class="top"><div class="brand">GEM STORE</div><div class="wallet"><span>Gems</span>💎 ${fmtInt(state.gems)}</div></div>`;
+}
+
 function promoHTML() {
   return `<div class="promo">
-    <span class="flash">⚡ Legendary drop rate BOOSTED</span>
-    <span class="timer">Bonus offer ends in <b id="timer">${timerText()}</b></span>
+    <span class="flash">⚡ High Roller: Legendary odds DOUBLED</span>
+    <span class="timer">Offer ends in <b id="timer">${timerText()}</b></span>
   </div>`;
 }
 
@@ -255,150 +293,148 @@ function revealHTML() {
   </div>`;
 }
 
-function storeHTML() {
-  const cards = CONFIG.bundles.map(b => `
-    <button class="bundle${b.best ? " best" : ""}" data-action="pick" data-id="${b.id}">
-      <span class="badge">${b.badge}</span>
-      <span class="gems">${fmtInt(b.gems)} 💎</span>
-      <span class="price">${fmtUSD(b.usd)}</span>
+function chooseHTML() {
+  const cards = CONFIG.modes.map(m => `
+    <button class="mode${m.featured ? " featured" : ""}" data-action="pick" data-id="${m.id}">
+      <span class="badge">${m.badge}</span>
+      <span class="name">${m.name}</span>
+      <span class="pitch">${m.pitch}</span>
+      <span class="price"><b>${fmtInt(m.boxPrice)} 💎</b> per box</span>
     </button>`).join("");
   return `
-    <div class="top"><div class="brand">GEM STORE</div><div class="wallet"><span>Wallet</span>${fmtUSD(CONFIG.budget)}</div></div>
+    ${headerHTML()}
     ${promoHTML()}
-    <h1>Choose your gem bundle</h1>
-    <p class="sub">Loot boxes hold Common, Rare, Epic and Legendary items.</p>
-    <div class="bundles">${cards}</div>
-    <p class="note">1 loot box = ${fmtInt(CONFIG.boxPrice)} 💎</p>
+    <h1>Your Starter Pack is ready!</h1>
+    <p class="sub">You have ${fmtInt(CONFIG.startGems)} 💎. Pick how you want to open.</p>
+    <div class="modes">${cards}</div>
     ${revealHTML()}
     ${fineprintHTML()}`;
 }
 
-function boxHTML() {
-  if (shaking) return `<div class="box shake" aria-label="Opening box"><span class="q">?</span></div>`;
+function boxHTML(mode) {
+  const premium = mode.featured ? " premium" : "";
+  if (shaking) return `<div class="box shake${premium}" aria-label="Opening box"><span class="q">?</span></div>`;
   if (lastPull) {
     return `<div class="box result t-${lastPull.tier}">
       <span class="tier">${lastPull.tier}</span><span class="item">${lastPull.item}</span></div>`;
   }
-  return `<div class="box" aria-label="Unopened loot box"><span class="q">?</span></div>`;
+  return `<div class="box${premium}" aria-label="Unopened loot box"><span class="q">?</span></div>`;
 }
 
-function inventoryHTML() {
-  const b = bundleById(state.bundleId);
-  const canOpen = Math.floor(state.gems / CONFIG.boxPrice);
+function openHTML() {
+  const m = modeById(state.modeId);
+  const canOpen = Math.floor(state.gems / m.boxPrice);
   const c = counts();
   const chips = TIER_ORDER.filter(t => c[t] > 0).map(t => `<span class="chip ${t}">${t} × ${c[t]}</span>`).join("");
-  const recent = state.opened.slice().reverse().slice(0, 8)
+  const recent = state.opened.slice().reverse()
     .map(p => `<li><span class="${p.tier}">${p.item}</span><span class="${p.tier}">${p.tier}</span></li>`).join("");
 
-  let hook = "";
-  if (canOpen === 0) {
-    const need = CONFIG.boxPrice - state.gems;
-    const cheapest = CONFIG.bundles[0];
-    hook = `<div class="hook">
+  let action;
+  if (canOpen > 0 || busy) {
+    action = `<p class="count">${m.name} box · <b>${fmtInt(m.boxPrice)} 💎</b></p>
+      <button class="cta" data-action="open" ${busy ? "disabled" : ""}>${busy ? "Opening…" : "Open box"}</button>`;
+  } else {
+    const need = m.boxPrice - state.gems;
+    action = `<div class="hook">
       <p>So close! Only ${fmtInt(need)} more 💎 for another box.</p>
-      <div class="topup"><span><b>${fmtInt(cheapest.gems)} 💎</b> · ${fmtUSD(cheapest.usd)}</span>
-        <span class="lock">🔒 Demo limit: one purchase</span></div>
+      <div class="topup"><span><b>${fmtInt(CONFIG.topUp.gems)} 💎</b> · ${fmtUSD(CONFIG.topUp.usd)}</span>
+        <span class="lock">🔒 Demo limit: no top-ups</span></div>
     </div>`;
   }
 
   return `
-    <div class="top"><div class="brand">GEM STORE</div><div class="wallet"><span>Gems</span>💎 ${fmtInt(state.gems)}</div></div>
+    ${headerHTML()}
     ${promoHTML()}
-    <div class="stage">${boxHTML()}</div>
-    <div class="balance"><div class="small">Each box costs ${fmtInt(CONFIG.boxPrice)} 💎</div></div>
-    <div class="actions">
-      <button class="cta" data-action="open1" ${busy || canOpen === 0 ? "disabled" : ""}>Open 1 box</button>
-      <button class="ghost" data-action="openall" ${busy || canOpen < 2 ? "disabled" : ""}>Open all (${canOpen})</button>
-    </div>
-    ${hook}
-    ${state.opened.length ? `<h2>Your pulls</h2><div class="tally">${chips}</div><ul class="pulls">${recent}</ul>` : ""}
+    <div class="stage">${boxHTML(m)}</div>
+    ${action}
+    ${state.opened.length ? `<h2>Your pulls (${state.opened.length})</h2><div class="tally">${chips}</div><ul class="pulls">${recent}</ul>` : ""}
     ${revealHTML()}
     ${fineprintHTML()}`;
 }
 
 function receiptHTML() {
-  const b = bundleById(state.bundleId);
+  const m = modeById(state.modeId);
   const n = state.opened.length;
   const c = counts();
-  const perBoxCosts = CONFIG.bundles.map(costPerBox);
-  const avgBoxes = Math.round(100 / CONFIG.tiers[0].pct);
-  const legLow = avgBoxes * Math.min(...perBoxCosts);
-  const legHigh = avgBoxes * Math.max(...perBoxCosts);
-  const legP = CONFIG.tiers[0].pct / 100;
-  const chanceLeg = 1 - Math.pow(1 - legP, n);
+  const [hr, std] = [modeById("high"), modeById("std")];
+  const sH = modeStats(hr), sS = modeStats(std);
+  const mine = id => (m && m.id === id ? " mine" : "");
 
-  const oddsRows = CONFIG.tiers.map(t => {
-    const oneIn = 100 / t.pct;
-    const oneInText = oneIn >= 10 ? "1 in " + Math.round(oneIn) : oneIn > 1.5 ? "about 1 in " + Math.round(oneIn) : "4 in 5";
-    return `<tr><td>${t.name}</td><td>${t.pct}%</td><td class="muted">${oneInText}</td></tr>`;
-  }).join("");
+  const leftUSD = state.gems * usdPerGem();
+  const pulled = TIER_ORDER.filter(t => c[t] > 0).map(t => `${c[t]} ${t}`).join(", ") || "nothing";
+  const top = `<div class="receipt">
+    <h1>Your receipt</h1>
+    <div class="spent">${fmtUSD(CONFIG.packUSD)}</div>
+    <p class="spentnote">That’s what your ${fmtInt(CONFIG.startGems)} 💎 Starter Pack costs.</p>
+    <table>
+      <tr><td>Mode</td><td>${m ? m.name : "None picked"}</td></tr>
+      <tr><td>Boxes opened</td><td>${n}</td></tr>
+      <tr><td>Real price of each box</td><td>${n ? fmtUSD(CONFIG.packUSD / n) : "—"}</td></tr>
+      <tr class="warn"><td>Gems stuck in your account</td><td>${fmtInt(state.gems)} 💎 = ${fmtUSD(leftUSD)}</td></tr>
+      <tr><td>What you got</td><td>${pulled}</td></tr>
+    </table>
+  </div>`;
 
-  let top;
-  if (!b) {
-    top = `<div class="receipt">
-      <h1>Your receipt</h1>
-      <div class="spent">$0.00</div>
-      <table><tr><td>You bought nothing.</td><td>Smart.</td></tr>
-      <tr><td>The average Legendary in this store costs</td><td>${fmtWhole(legLow)}+</td></tr></table>
-    </div>`;
-  } else {
-    const leftUSD = state.gems * (b.usd / b.gems);
-    const pulled = TIER_ORDER.filter(t => c[t] > 0).map(t => `${c[t]} ${t}`).join(", ") || "nothing yet";
-    top = `<div class="receipt">
-      <h1>Your receipt</h1>
-      <div class="spent">${fmtUSD(b.usd)}</div>
-      <table>
-        <tr><td>Gems bought</td><td>${fmtInt(b.gems)} 💎</td></tr>
-        <tr><td>Boxes opened</td><td>${n}</td></tr>
-        <tr><td>Real price of each box</td><td>${n ? fmtUSD(b.usd / n) : "—"}</td></tr>
-        <tr class="warn"><td>Gems stuck in your account</td><td>${fmtInt(state.gems)} 💎 = ${fmtUSD(leftUSD)}</td></tr>
-        <tr><td>What you got</td><td>${pulled}</td></tr>
-      </table>
-    </div>`;
-  }
+  const headline = sH.chanceLeg < sS.chanceLeg
+    ? `High Roller doubled the odds per box, and lowered your chance of a Legendary.`
+    : `High Roller doubled the odds per box.`;
 
-  return `
-    ${top}
-    <div class="card">
-      <h2>The odds you weren’t shown</h2>
-      <table class="odds">${oddsRows}</table>
-    </div>
-    <div class="card">
-      <h2>What a Legendary really costs</h2>
-      <div class="stat">${fmtInt(avgBoxes)} boxes</div>
-      <p class="muted" style="margin:0 0 12px">on average, or ${fmtWhole(legLow)} to ${fmtWhole(legHigh)} depending on the bundle.</p>
-      ${b ? `<div class="stat">${(chanceLeg * 100).toFixed(1)}%</div>
-      <p class="muted" style="margin:0">your chance of a Legendary from ${n} box${n === 1 ? "" : "es"}.</p>` : ""}
-    </div>
-    <div class="card">
-      <h2>What the store did to you</h2>
-      <ul class="tricks">
-        <li><b>Changed the unit.</b> You saw ${fmtInt(CONFIG.boxPrice)} 💎, not ${fmtUSD(Math.min(...perBoxCosts))}–${fmtUSD(Math.max(...perBoxCosts))}.</li>
-        <li><b>Mismatched the bundles.</b> No bundle divides evenly into boxes, so everyone has leftovers.</li>
-        <li><b>Hid the odds.</b> “Boosted” was real, and still 0.5%. The odds sat behind a tiny link.</li>
-        <li><b>Faked urgency.</b> The “offer ends” timer restarted every ${CONFIG.timerSeconds / 60} minutes.</li>
-      </ul>
-    </div>
+  const row = (label, a, b, why) =>
+    `<tr><td>${label}${why ? `<span class="why">${why}</span>` : ""}</td><td class="${mine("high").trim()}">${a}</td><td class="${mine("std").trim()}">${b}</td></tr>`;
+
+  const compare = `<div class="card">
+    <h2>The two modes, honestly</h2>
+    <p class="headline">${headline}</p>
+    <table class="cmp">
+      <tr><th></th><th class="${mine("high").trim()}">High Roller</th><th class="${mine("std").trim()}">Standard</th></tr>
+      ${row("Price per box", `${fmtInt(hr.boxPrice)} 💎<span class="why">${fmtUSD(sH.gemPriceUSD)}</span>`, `${fmtInt(std.boxPrice)} 💎<span class="why">${fmtUSD(sS.gemPriceUSD)}</span>`)}
+      ${row("Boxes from your pack", sH.boxes, sS.boxes)}
+      ${row("Legendary odds per box", `${hr.tiers[0].pct}%`, `${std.tiers[0].pct}%`)}
+      ${row("Chance of a Legendary", fmtPct(sH.chanceLeg * 100), fmtPct(sS.chanceLeg * 100), "across all your boxes")}
+      ${row("Chance of Epic or better", fmtPct(sH.chanceEpicPlus * 100), fmtPct(sS.chanceEpicPlus * 100), "across all your boxes")}
+      ${row("Average cost of one Legendary", fmtWhole(sH.costPerLeg), fmtWhole(sS.costPerLeg))}
+      ${row("Gems left over", `${sH.left} 💎`, `${sS.left} 💎`)}
+    </table>
+  </div>`;
+
+  const oddsRows = TIER_ORDER.map(t =>
+    `<tr><td>${t}</td><td class="${mine("high").trim()}">${hr.tiers.find(x => x.name === t).pct}%</td><td class="${mine("std").trim()}">${std.tiers.find(x => x.name === t).pct}%</td></tr>`).join("");
+  const odds = `<div class="card">
+    <h2>The odds you weren’t shown</h2>
+    <table class="cmp"><tr><th></th><th class="${mine("high").trim()}">High Roller</th><th class="${mine("std").trim()}">Standard</th></tr>${oddsRows}</table>
+  </div>`;
+
+  const tricks = `<div class="card">
+    <h2>What the store did to you</h2>
+    <ul class="tricks">
+      <li><b>Changed the unit.</b> You thought in gems. Your pack cost ${fmtUSD(CONFIG.packUSD)}.</li>
+      <li><b>Sold you a bigger number.</b> “2× odds” sounds better. Fewer boxes made it worse.</li>
+      <li><b>Stranded your leftovers.</b> Neither box price divides ${fmtInt(CONFIG.startGems)} 💎, so everyone ends with gems they can’t spend.</li>
+      <li><b>Hid the odds.</b> They sat behind a tiny link at the bottom.</li>
+      <li><b>Faked urgency.</b> The “offer ends” timer restarted every ${CONFIG.timerSeconds / 60} minutes.</li>
+    </ul>
+  </div>`;
+
+  return `${top}${compare}${odds}${tricks}
     <p class="footer">No real money was charged. Nothing you did left your phone.</p>`;
 }
 
 function modalHTML() {
   if (!modal) return "";
   if (modal.kind === "confirm") {
-    const b = bundleById(modal.id);
-    return `<div class="modal" data-action="close"><div class="sheet" role="dialog" aria-modal="true" aria-label="Confirm purchase">
-      <p>Buy <b>${fmtInt(b.gems)} 💎</b> for <b>${fmtUSD(b.usd)}</b>?</p>
-      <p class="fine">One purchase per player in this demo.</p>
-      <div class="actions"><button class="ghost" data-action="close">Cancel</button>
-      <button class="cta" data-action="buy" data-id="${b.id}">Buy</button></div>
+    const m = modeById(modal.id);
+    return `<div class="modal" data-action="close"><div class="sheet" role="dialog" aria-modal="true" aria-label="Confirm mode">
+      <p>Lock in <b>${m.name}</b>? Each box costs <b>${fmtInt(m.boxPrice)} 💎</b>.</p>
+      <p class="fine">You can’t switch modes after you choose.</p>
+      <div class="actions"><button class="ghost" data-action="close">Back</button>
+      <button class="cta" data-action="choose" data-id="${m.id}">Lock in</button></div>
     </div></div>`;
   }
   if (modal.kind === "odds") {
-    const rows = CONFIG.tiers.map(t => `${t.name} ${t.pct}%`).join(" · ");
+    const lines = CONFIG.modes.map(m => `${m.name}: ` + m.tiers.map(t => `${t.name} ${t.pct}%`).join(", ")).join(". ");
     return `<div class="modal" data-action="close"><div class="sheet" role="dialog" aria-modal="true" aria-label="Probability disclosure">
-      <p class="tiny">PROBABILITY DISCLOSURE. Item drop probabilities per loot box: ${rows}.
-      “Boosted” Legendary rate is relative to a standard rate of 0.25%. Items have no cash value.
-      Rates may change at any time without notice.</p>
+      <p class="tiny">PROBABILITY DISCLOSURE. Item drop probabilities per loot box. ${lines}.
+      Gems are sold in Starter Packs of ${fmtInt(CONFIG.startGems)}. Items have no cash value. Rates may change at any time without notice.</p>
       <div class="actions"><button class="ghost" data-action="close">Close</button></div>
     </div></div>`;
   }
@@ -408,30 +444,26 @@ function modalHTML() {
 function render() {
   let body;
   if (state.revealed) body = receiptHTML();
-  else if (!state.bundleId) body = storeHTML();
-  else body = inventoryHTML();
+  else if (!state.modeId) body = chooseHTML();
+  else body = openHTML();
   $app.innerHTML = body + modalHTML();
 }
 
 /* ===== Actions ===== */
-async function openBoxes(howMany) {
-  if (busy) return;
+async function openOne() {
+  const m = modeById(state.modeId);
+  if (busy || !m || state.gems < m.boxPrice) return;
   busy = true;
-  const quick = howMany > 1;
-  for (let i = 0; i < howMany && state.gems >= CONFIG.boxPrice; i++) {
-    state.gems -= CONFIG.boxPrice;
-    const pull = drawPull();
-    state.opened.push(pull);
-    save();
-    if (!reducedMotion()) {
-      shaking = true; render();
-      await sleep(quick ? 450 : 900);
-      shaking = false;
-    }
-    lastPull = pull;
-    render();
-    if (quick) await sleep(pull.tier === "Common" ? 350 : 900);
+  state.gems -= m.boxPrice;
+  const pull = drawPull(m);
+  state.opened.push(pull);
+  save();
+  if (!reducedMotion()) {
+    shaking = true; render();
+    await sleep(pull.tier === "Common" ? 900 : 1400);   // rarer pulls shake longer
+    shaking = false;
   }
+  lastPull = pull;
   busy = false;
   render();
 }
@@ -446,16 +478,12 @@ $app.addEventListener("click", e => {
     modal = null; render();
   } else if (action === "pick") {
     modal = { kind: "confirm", id: el.dataset.id }; render();
-  } else if (action === "buy") {
-    if (state.bundleId) return;              // one purchase only
-    const b = bundleById(el.dataset.id);
-    state.bundleId = b.id;
-    state.gems = b.gems;
+  } else if (action === "choose") {
+    if (state.modeId) return;              // one choice only
+    state.modeId = el.dataset.id;
     save(); modal = null; render();
-  } else if (action === "open1") {
-    openBoxes(1);
-  } else if (action === "openall") {
-    openBoxes(Math.floor(state.gems / CONFIG.boxPrice));
+  } else if (action === "open") {
+    openOne();
   } else if (action === "odds") {
     modal = { kind: "odds" }; render();
   }
@@ -470,6 +498,7 @@ $app.addEventListener("submit", e => {
   if (code === CONFIG.revealCode.toUpperCase()) {
     revealError = "";
     state.revealed = true;
+    modal = null;
     save();
     render();
     window.scrollTo(0, 0);
@@ -477,7 +506,7 @@ $app.addEventListener("submit", e => {
     revealError = "Not yet. Wait for the presenters.";
     render();
     const f = $app.querySelector("[data-form='reveal']");
-    if (f) { f.classList.add("wrong"); }
+    if (f) f.classList.add("wrong");
   }
 });
 
