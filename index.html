@@ -1,0 +1,493 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="theme-color" content="#14122B">
+<meta name="robots" content="noindex">
+<title>Gem Store</title>
+<style>
+  :root {
+    --bg: #14122B; --panel: #221F45; --line: #3A3670;
+    --gold: #F2B632; --cream: #F6F3EA; --muted: #B9B5D6;
+    --common: #9A98B0; --rare: #4EA8DE; --epic: #C77DFF; --legendary: #F2B632;
+  }
+  * { box-sizing: border-box; }
+  html, body { margin: 0; background: var(--bg); color: var(--cream); }
+  body {
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+    -webkit-tap-highlight-color: transparent;
+  }
+  main { max-width: 480px; margin: 0 auto; padding: 16px 16px calc(32px + env(safe-area-inset-bottom)); }
+  button { font: inherit; cursor: pointer; }
+  button:disabled { cursor: default; opacity: .45; }
+
+  .top { display: flex; justify-content: space-between; align-items: center; margin-bottom: 12px; }
+  .brand { font-weight: 800; letter-spacing: 3px; color: var(--gold); }
+  .wallet { background: var(--panel); border: 1px solid var(--line); border-radius: 999px; padding: 6px 14px; font-weight: 700; }
+  .wallet span { color: var(--muted); font-weight: 600; margin-right: 6px; font-size: 14px; }
+
+  .promo { background: linear-gradient(90deg, #3a1d5c, #5b2a6e); border-radius: 12px; padding: 10px 14px; display: flex; flex-direction: column; gap: 2px; margin-bottom: 18px; }
+  .promo .flash { font-weight: 800; color: var(--gold); animation: pulse 1.2s ease-in-out infinite; }
+  .promo .timer { font-size: 14px; color: var(--muted); }
+  .promo .timer b { color: var(--cream); font-variant-numeric: tabular-nums; }
+
+  h1 { font-size: 26px; margin: 0 0 14px; line-height: 1.2; }
+  h2 { font-size: 20px; margin: 24px 0 10px; }
+  .sub { color: var(--muted); margin: -6px 0 16px; }
+
+  .bundles { display: flex; flex-direction: column; gap: 12px; }
+  .bundle { position: relative; display: flex; justify-content: space-between; align-items: center; width: 100%;
+    background: var(--panel); color: var(--cream); border: 1px solid var(--line); border-radius: 16px; padding: 22px 18px 18px; text-align: left; }
+  .bundle.best { border: 2px solid var(--gold); box-shadow: 0 0 24px rgba(242,182,50,.25); }
+  .bundle .badge { position: absolute; top: -11px; left: 14px; background: var(--muted); color: var(--bg); font-size: 12px; font-weight: 800;
+    text-transform: uppercase; letter-spacing: 1px; padding: 3px 10px; border-radius: 999px; }
+  .bundle.best .badge { background: var(--gold); }
+  .bundle .gems { font-size: 26px; font-weight: 800; }
+  .bundle .price { background: var(--gold); color: var(--bg); font-weight: 800; padding: 8px 14px; border-radius: 10px; font-size: 18px; }
+  .note { color: var(--muted); font-size: 15px; margin-top: 14px; text-align: center; }
+
+  .balance { text-align: center; margin: 8px 0 4px; }
+  .balance .big { font-size: 44px; font-weight: 800; }
+  .balance .small { color: var(--muted); font-size: 14px; }
+
+  .stage { display: flex; justify-content: center; margin: 18px 0; min-height: 190px; align-items: center; }
+  .box { width: 170px; height: 170px; border-radius: 22px; display: flex; flex-direction: column; align-items: center; justify-content: center;
+    background: linear-gradient(145deg, #3a3670, #221f45); border: 2px solid var(--line); text-align: center; padding: 12px; }
+  .box .q { font-size: 72px; font-weight: 800; color: var(--muted); }
+  .box.shake { animation: shake .55s ease-in-out infinite; }
+  .box.result { animation: pop .35s ease-out; }
+  .box .tier { font-size: 13px; font-weight: 800; letter-spacing: 2px; text-transform: uppercase; }
+  .box .item { font-size: 20px; font-weight: 800; margin-top: 6px; line-height: 1.2; }
+  .box.t-Common { border-color: var(--common); } .box.t-Common .tier { color: var(--common); }
+  .box.t-Rare { border-color: var(--rare); background: linear-gradient(145deg, #1d3a55, #221f45); } .box.t-Rare .tier { color: var(--rare); }
+  .box.t-Epic { border-color: var(--epic); background: linear-gradient(145deg, #45225f, #221f45); } .box.t-Epic .tier { color: var(--epic); }
+  .box.t-Legendary { border-color: var(--legendary); background: linear-gradient(145deg, #6b4e10, #2c2341); box-shadow: 0 0 40px rgba(242,182,50,.6); }
+  .box.t-Legendary .tier { color: var(--legendary); }
+
+  .actions { display: flex; gap: 10px; }
+  .cta { flex: 1; background: var(--gold); color: var(--bg); border: 0; border-radius: 14px; padding: 16px 12px; font-weight: 800; font-size: 18px; }
+  .ghost { flex: 1; background: transparent; color: var(--cream); border: 1px solid var(--line); border-radius: 14px; padding: 16px 12px; font-weight: 700; font-size: 16px; }
+
+  .hook { margin-top: 16px; background: #3a1d2b; border: 1px solid #7a3550; border-radius: 14px; padding: 14px; }
+  .hook p { margin: 0 0 10px; font-weight: 700; }
+  .topup { display: flex; justify-content: space-between; align-items: center; background: var(--panel); border-radius: 10px; padding: 12px; opacity: .6; }
+  .topup .lock { font-size: 13px; color: var(--muted); }
+
+  .tally { display: flex; flex-wrap: wrap; gap: 8px; }
+  .chip { border-radius: 999px; padding: 6px 12px; font-size: 14px; font-weight: 700; background: var(--panel); border: 1px solid var(--line); }
+  .chip.Common { color: var(--common); } .chip.Rare { color: var(--rare); } .chip.Epic { color: var(--epic); } .chip.Legendary { color: var(--legendary); }
+  .pulls { list-style: none; padding: 0; margin: 10px 0 0; display: flex; flex-direction: column; gap: 6px; }
+  .pulls li { display: flex; justify-content: space-between; background: var(--panel); border-radius: 10px; padding: 10px 12px; font-size: 15px; }
+  .pulls .Common { color: var(--common); } .pulls .Rare { color: var(--rare); } .pulls .Epic { color: var(--epic); } .pulls .Legendary { color: var(--legendary); font-weight: 800; }
+
+  .reveal { margin-top: 28px; border-top: 1px solid var(--line); padding-top: 18px; }
+  .reveal p { color: var(--muted); margin: 0 0 10px; font-size: 15px; }
+  .reveal form { display: flex; gap: 8px; }
+  .reveal input { flex: 1; min-width: 0; font-size: 18px; padding: 12px; border-radius: 12px; border: 1px solid var(--line); background: var(--panel);
+    color: var(--cream); text-transform: uppercase; letter-spacing: 2px; }
+  .reveal button { flex: 0 0 auto; }
+  .reveal .err { color: #ff8fa3; font-size: 14px; margin-top: 8px; min-height: 18px; }
+  .reveal form.wrong { animation: shake .35s ease-in-out 1; }
+
+  .fineprint { margin-top: 26px; text-align: center; }
+  .fineprint button { background: none; border: 0; color: #5d5a7e; font-size: 11px; text-decoration: underline; padding: 6px; }
+
+  .modal { position: fixed; inset: 0; background: rgba(8,7,20,.75); display: flex; align-items: flex-end; justify-content: center; z-index: 10; }
+  .sheet { background: var(--panel); border-top: 1px solid var(--line); border-radius: 20px 20px 0 0; padding: 22px 18px calc(22px + env(safe-area-inset-bottom));
+    width: 100%; max-width: 480px; }
+  .sheet p { margin: 0 0 12px; font-size: 18px; }
+  .sheet .fine { color: var(--muted); font-size: 14px; }
+  .sheet .tiny { color: #6f6c92; font-size: 11px; line-height: 1.5; }
+
+  /* Receipt */
+  .receipt { background: var(--cream); color: var(--bg); border-radius: 18px; padding: 20px 18px; }
+  .receipt h1 { color: var(--bg); margin-bottom: 4px; }
+  .receipt .spent { font-size: 48px; font-weight: 800; margin: 4px 0 14px; }
+  .receipt table { width: 100%; border-collapse: collapse; font-size: 15px; }
+  .receipt td { padding: 9px 0; border-top: 1px dashed #cfc8b1; vertical-align: top; }
+  .receipt td:last-child { text-align: right; font-weight: 800; padding-left: 10px; }
+  .receipt .warn td:last-child { color: #a1262e; }
+  .card { background: var(--panel); border: 1px solid var(--line); border-radius: 16px; padding: 16px; margin-top: 14px; }
+  .card h2 { margin: 0 0 10px; }
+  .odds { width: 100%; border-collapse: collapse; font-size: 16px; }
+  .odds td { padding: 8px 0; border-top: 1px solid var(--line); }
+  .odds td:nth-child(2), .odds td:nth-child(3) { text-align: right; font-variant-numeric: tabular-nums; }
+  .stat { font-size: 30px; font-weight: 800; color: var(--gold); margin: 2px 0; }
+  .muted { color: var(--muted); }
+  .tricks { margin: 0; padding-left: 20px; } .tricks li { margin-bottom: 8px; }
+  .footer { color: var(--muted); font-size: 13px; text-align: center; margin-top: 20px; }
+
+  @keyframes shake { 0%,100% { transform: rotate(0); } 25% { transform: rotate(-6deg) scale(1.03); } 75% { transform: rotate(6deg) scale(1.03); } }
+  @keyframes pop { 0% { transform: scale(.6); opacity: 0; } 100% { transform: scale(1); opacity: 1; } }
+  @keyframes pulse { 0%,100% { opacity: 1; } 50% { opacity: .55; } }
+  @media (prefers-reduced-motion: reduce) { *, *::before, *::after { animation: none !important; } }
+</style>
+</head>
+<body>
+<main id="app" aria-live="polite"></main>
+<noscript><p style="padding:16px">This store needs JavaScript turned on.</p></noscript>
+
+<script>
+"use strict";
+
+/* ===== Settings you may want to change ===== */
+const CONFIG = {
+  revealCode: "RECEIPT",       // presenters say this out loud at the reveal
+  budget: 20,                  // pretend dollars per player
+  boxPrice: 340,               // gems per loot box
+  timerSeconds: 120,           // fake "offer ends" countdown; silently restarts
+  bundles: [
+    { id: "s", gems: 500,  usd: 4.99,  badge: "Starter" },
+    { id: "m", gems: 1200, usd: 9.99,  badge: "+20% bonus" },
+    { id: "l", gems: 2600, usd: 19.99, badge: "Best value", best: true }
+  ],
+  // Roll 1..1000. A tier wins if the roll is <= its max (checked in this order).
+  tiers: [
+    { name: "Legendary", max: 5,    pct: 0.5 },
+    { name: "Epic",      max: 50,   pct: 4.5 },
+    { name: "Rare",      max: 210,  pct: 16 },
+    { name: "Common",    max: 1000, pct: 79 }
+  ],
+  items: {
+    Legendary: ["Solar Crown", "Void Dragon Wings"],
+    Epic: ["Neon Katana", "Aurora Cape", "Phantom Mask"],
+    Rare: ["Chrome Visor", "Ember Boots", "Frost Trail", "Gold-Trim Jacket"],
+    Common: ["Gray Hoodie", "Sticker: GG", "Emote: Wave", "Spray: Smiley", "Brown Boots", "Blue Bandana"]
+  },
+  storageKey: "gemstore-v1"
+};
+const TIER_ORDER = ["Legendary", "Epic", "Rare", "Common"];
+
+/* ===== State (saved so a refresh doesn't reset or allow a second purchase) ===== */
+function freshState() { return { bundleId: null, gems: 0, opened: [], revealed: false, started: Date.now() }; }
+
+function load() {
+  try {
+    const raw = localStorage.getItem(CONFIG.storageKey);
+    if (raw) {
+      const s = JSON.parse(raw);
+      if (s && Array.isArray(s.opened)) return s;
+    }
+  } catch (e) { /* storage blocked: play without saving */ }
+  return freshState();
+}
+function save() {
+  try { localStorage.setItem(CONFIG.storageKey, JSON.stringify(state)); } catch (e) { /* ignore */ }
+}
+
+// Add ?reset to the URL to start over (for rehearsals and testing).
+if (new URLSearchParams(location.search).has("reset")) {
+  try { localStorage.removeItem(CONFIG.storageKey); } catch (e) { /* ignore */ }
+  history.replaceState(null, "", location.pathname);
+}
+
+let state = load();
+let busy = false;      // true while a box is opening
+let modal = null;      // null | {kind:"confirm", id} | {kind:"odds"}
+let lastPull = null;   // most recent pull, shown in the box
+let shaking = false;
+let revealError = "";
+
+/* ===== Helpers ===== */
+const $app = document.getElementById("app");
+const fmtUSD = n => "$" + n.toFixed(2);
+const fmtWhole = n => "$" + Math.round(n).toLocaleString("en-US");
+const fmtInt = n => n.toLocaleString("en-US");
+const bundleById = id => CONFIG.bundles.find(b => b.id === id);
+const sleep = ms => new Promise(r => setTimeout(r, ms));
+const reducedMotion = () => window.matchMedia && matchMedia("(prefers-reduced-motion: reduce)").matches;
+
+// Unbiased integer in 1..1000 using the browser's cryptographic RNG.
+function roll1000() {
+  if (window.crypto && crypto.getRandomValues) {
+    const buf = new Uint32Array(1);
+    const limit = Math.floor(0x100000000 / 1000) * 1000;
+    let x;
+    do { crypto.getRandomValues(buf); x = buf[0]; } while (x >= limit);
+    return (x % 1000) + 1;
+  }
+  return Math.floor(Math.random() * 1000) + 1;
+}
+function pick(list) { return list[roll1000() % list.length]; }
+
+function drawPull() {
+  const roll = roll1000();
+  const tier = CONFIG.tiers.find(t => roll <= t.max).name;
+  return { tier, item: pick(CONFIG.items[tier]), roll };
+}
+
+function counts() {
+  const c = { Legendary: 0, Epic: 0, Rare: 0, Common: 0 };
+  state.opened.forEach(p => { c[p.tier]++; });
+  return c;
+}
+
+// Cost of one box when buying a given bundle, ignoring stranded gems.
+function costPerBox(b) { return b.usd / Math.floor(b.gems / CONFIG.boxPrice); }
+
+function timerText() {
+  const elapsed = Math.floor((Date.now() - state.started) / 1000);
+  const left = CONFIG.timerSeconds - (elapsed % CONFIG.timerSeconds);
+  return Math.floor(left / 60) + ":" + String(left % 60).padStart(2, "0");
+}
+
+/* ===== Screens ===== */
+function promoHTML() {
+  return `<div class="promo">
+    <span class="flash">⚡ Legendary drop rate BOOSTED</span>
+    <span class="timer">Bonus offer ends in <b id="timer">${timerText()}</b></span>
+  </div>`;
+}
+
+function fineprintHTML() {
+  return `<div class="fineprint"><button data-action="odds">Probability disclosure</button></div>`;
+}
+
+function revealHTML() {
+  return `<div class="reveal">
+    <p>Done? Wait for your presenters to give you the code.</p>
+    <form data-form="reveal" autocomplete="off">
+      <input name="code" aria-label="Reveal code" placeholder="CODE" autocapitalize="characters" spellcheck="false">
+      <button class="cta" type="submit">Reveal</button>
+    </form>
+    <div class="err" role="alert">${revealError}</div>
+  </div>`;
+}
+
+function storeHTML() {
+  const cards = CONFIG.bundles.map(b => `
+    <button class="bundle${b.best ? " best" : ""}" data-action="pick" data-id="${b.id}">
+      <span class="badge">${b.badge}</span>
+      <span class="gems">${fmtInt(b.gems)} 💎</span>
+      <span class="price">${fmtUSD(b.usd)}</span>
+    </button>`).join("");
+  return `
+    <div class="top"><div class="brand">GEM STORE</div><div class="wallet"><span>Wallet</span>${fmtUSD(CONFIG.budget)}</div></div>
+    ${promoHTML()}
+    <h1>Choose your gem bundle</h1>
+    <p class="sub">Loot boxes hold Common, Rare, Epic and Legendary items.</p>
+    <div class="bundles">${cards}</div>
+    <p class="note">1 loot box = ${fmtInt(CONFIG.boxPrice)} 💎</p>
+    ${revealHTML()}
+    ${fineprintHTML()}`;
+}
+
+function boxHTML() {
+  if (shaking) return `<div class="box shake" aria-label="Opening box"><span class="q">?</span></div>`;
+  if (lastPull) {
+    return `<div class="box result t-${lastPull.tier}">
+      <span class="tier">${lastPull.tier}</span><span class="item">${lastPull.item}</span></div>`;
+  }
+  return `<div class="box" aria-label="Unopened loot box"><span class="q">?</span></div>`;
+}
+
+function inventoryHTML() {
+  const b = bundleById(state.bundleId);
+  const canOpen = Math.floor(state.gems / CONFIG.boxPrice);
+  const c = counts();
+  const chips = TIER_ORDER.filter(t => c[t] > 0).map(t => `<span class="chip ${t}">${t} × ${c[t]}</span>`).join("");
+  const recent = state.opened.slice().reverse().slice(0, 8)
+    .map(p => `<li><span class="${p.tier}">${p.item}</span><span class="${p.tier}">${p.tier}</span></li>`).join("");
+
+  let hook = "";
+  if (canOpen === 0) {
+    const need = CONFIG.boxPrice - state.gems;
+    const cheapest = CONFIG.bundles[0];
+    hook = `<div class="hook">
+      <p>So close! Only ${fmtInt(need)} more 💎 for another box.</p>
+      <div class="topup"><span><b>${fmtInt(cheapest.gems)} 💎</b> · ${fmtUSD(cheapest.usd)}</span>
+        <span class="lock">🔒 Demo limit: one purchase</span></div>
+    </div>`;
+  }
+
+  return `
+    <div class="top"><div class="brand">GEM STORE</div><div class="wallet"><span>Gems</span>💎 ${fmtInt(state.gems)}</div></div>
+    ${promoHTML()}
+    <div class="stage">${boxHTML()}</div>
+    <div class="balance"><div class="small">Each box costs ${fmtInt(CONFIG.boxPrice)} 💎</div></div>
+    <div class="actions">
+      <button class="cta" data-action="open1" ${busy || canOpen === 0 ? "disabled" : ""}>Open 1 box</button>
+      <button class="ghost" data-action="openall" ${busy || canOpen < 2 ? "disabled" : ""}>Open all (${canOpen})</button>
+    </div>
+    ${hook}
+    ${state.opened.length ? `<h2>Your pulls</h2><div class="tally">${chips}</div><ul class="pulls">${recent}</ul>` : ""}
+    ${revealHTML()}
+    ${fineprintHTML()}`;
+}
+
+function receiptHTML() {
+  const b = bundleById(state.bundleId);
+  const n = state.opened.length;
+  const c = counts();
+  const perBoxCosts = CONFIG.bundles.map(costPerBox);
+  const avgBoxes = Math.round(100 / CONFIG.tiers[0].pct);
+  const legLow = avgBoxes * Math.min(...perBoxCosts);
+  const legHigh = avgBoxes * Math.max(...perBoxCosts);
+  const legP = CONFIG.tiers[0].pct / 100;
+  const chanceLeg = 1 - Math.pow(1 - legP, n);
+
+  const oddsRows = CONFIG.tiers.map(t => {
+    const oneIn = 100 / t.pct;
+    const oneInText = oneIn >= 10 ? "1 in " + Math.round(oneIn) : oneIn > 1.5 ? "about 1 in " + Math.round(oneIn) : "4 in 5";
+    return `<tr><td>${t.name}</td><td>${t.pct}%</td><td class="muted">${oneInText}</td></tr>`;
+  }).join("");
+
+  let top;
+  if (!b) {
+    top = `<div class="receipt">
+      <h1>Your receipt</h1>
+      <div class="spent">$0.00</div>
+      <table><tr><td>You bought nothing.</td><td>Smart.</td></tr>
+      <tr><td>The average Legendary in this store costs</td><td>${fmtWhole(legLow)}+</td></tr></table>
+    </div>`;
+  } else {
+    const leftUSD = state.gems * (b.usd / b.gems);
+    const pulled = TIER_ORDER.filter(t => c[t] > 0).map(t => `${c[t]} ${t}`).join(", ") || "nothing yet";
+    top = `<div class="receipt">
+      <h1>Your receipt</h1>
+      <div class="spent">${fmtUSD(b.usd)}</div>
+      <table>
+        <tr><td>Gems bought</td><td>${fmtInt(b.gems)} 💎</td></tr>
+        <tr><td>Boxes opened</td><td>${n}</td></tr>
+        <tr><td>Real price of each box</td><td>${n ? fmtUSD(b.usd / n) : "—"}</td></tr>
+        <tr class="warn"><td>Gems stuck in your account</td><td>${fmtInt(state.gems)} 💎 = ${fmtUSD(leftUSD)}</td></tr>
+        <tr><td>What you got</td><td>${pulled}</td></tr>
+      </table>
+    </div>`;
+  }
+
+  return `
+    ${top}
+    <div class="card">
+      <h2>The odds you weren’t shown</h2>
+      <table class="odds">${oddsRows}</table>
+    </div>
+    <div class="card">
+      <h2>What a Legendary really costs</h2>
+      <div class="stat">${fmtInt(avgBoxes)} boxes</div>
+      <p class="muted" style="margin:0 0 12px">on average, or ${fmtWhole(legLow)} to ${fmtWhole(legHigh)} depending on the bundle.</p>
+      ${b ? `<div class="stat">${(chanceLeg * 100).toFixed(1)}%</div>
+      <p class="muted" style="margin:0">your chance of a Legendary from ${n} box${n === 1 ? "" : "es"}.</p>` : ""}
+    </div>
+    <div class="card">
+      <h2>What the store did to you</h2>
+      <ul class="tricks">
+        <li><b>Changed the unit.</b> You saw ${fmtInt(CONFIG.boxPrice)} 💎, not ${fmtUSD(Math.min(...perBoxCosts))}–${fmtUSD(Math.max(...perBoxCosts))}.</li>
+        <li><b>Mismatched the bundles.</b> No bundle divides evenly into boxes, so everyone has leftovers.</li>
+        <li><b>Hid the odds.</b> “Boosted” was real, and still 0.5%. The odds sat behind a tiny link.</li>
+        <li><b>Faked urgency.</b> The “offer ends” timer restarted every ${CONFIG.timerSeconds / 60} minutes.</li>
+      </ul>
+    </div>
+    <p class="footer">No real money was charged. Nothing you did left your phone.</p>`;
+}
+
+function modalHTML() {
+  if (!modal) return "";
+  if (modal.kind === "confirm") {
+    const b = bundleById(modal.id);
+    return `<div class="modal" data-action="close"><div class="sheet" role="dialog" aria-modal="true" aria-label="Confirm purchase">
+      <p>Buy <b>${fmtInt(b.gems)} 💎</b> for <b>${fmtUSD(b.usd)}</b>?</p>
+      <p class="fine">One purchase per player in this demo.</p>
+      <div class="actions"><button class="ghost" data-action="close">Cancel</button>
+      <button class="cta" data-action="buy" data-id="${b.id}">Buy</button></div>
+    </div></div>`;
+  }
+  if (modal.kind === "odds") {
+    const rows = CONFIG.tiers.map(t => `${t.name} ${t.pct}%`).join(" · ");
+    return `<div class="modal" data-action="close"><div class="sheet" role="dialog" aria-modal="true" aria-label="Probability disclosure">
+      <p class="tiny">PROBABILITY DISCLOSURE. Item drop probabilities per loot box: ${rows}.
+      “Boosted” Legendary rate is relative to a standard rate of 0.25%. Items have no cash value.
+      Rates may change at any time without notice.</p>
+      <div class="actions"><button class="ghost" data-action="close">Close</button></div>
+    </div></div>`;
+  }
+  return "";
+}
+
+function render() {
+  let body;
+  if (state.revealed) body = receiptHTML();
+  else if (!state.bundleId) body = storeHTML();
+  else body = inventoryHTML();
+  $app.innerHTML = body + modalHTML();
+}
+
+/* ===== Actions ===== */
+async function openBoxes(howMany) {
+  if (busy) return;
+  busy = true;
+  const quick = howMany > 1;
+  for (let i = 0; i < howMany && state.gems >= CONFIG.boxPrice; i++) {
+    state.gems -= CONFIG.boxPrice;
+    const pull = drawPull();
+    state.opened.push(pull);
+    save();
+    if (!reducedMotion()) {
+      shaking = true; render();
+      await sleep(quick ? 450 : 900);
+      shaking = false;
+    }
+    lastPull = pull;
+    render();
+    if (quick) await sleep(pull.tier === "Common" ? 350 : 900);
+  }
+  busy = false;
+  render();
+}
+
+$app.addEventListener("click", e => {
+  const el = e.target.closest("[data-action]");
+  if (!el || busy) return;
+  const action = el.dataset.action;
+  if (action === "close") {
+    // Clicking the dark backdrop closes; clicks inside the sheet don't.
+    if (el.classList.contains("modal") && e.target !== el) return;
+    modal = null; render();
+  } else if (action === "pick") {
+    modal = { kind: "confirm", id: el.dataset.id }; render();
+  } else if (action === "buy") {
+    if (state.bundleId) return;              // one purchase only
+    const b = bundleById(el.dataset.id);
+    state.bundleId = b.id;
+    state.gems = b.gems;
+    save(); modal = null; render();
+  } else if (action === "open1") {
+    openBoxes(1);
+  } else if (action === "openall") {
+    openBoxes(Math.floor(state.gems / CONFIG.boxPrice));
+  } else if (action === "odds") {
+    modal = { kind: "odds" }; render();
+  }
+});
+
+$app.addEventListener("submit", e => {
+  const form = e.target.closest("[data-form='reveal']");
+  if (!form) return;
+  e.preventDefault();
+  if (busy) return;
+  const code = (form.elements.code.value || "").trim().toUpperCase();
+  if (code === CONFIG.revealCode.toUpperCase()) {
+    revealError = "";
+    state.revealed = true;
+    save();
+    render();
+    window.scrollTo(0, 0);
+  } else {
+    revealError = "Not yet. Wait for the presenters.";
+    render();
+    const f = $app.querySelector("[data-form='reveal']");
+    if (f) { f.classList.add("wrong"); }
+  }
+});
+
+// Keep the fake countdown ticking without re-rendering the page.
+setInterval(() => {
+  const t = document.getElementById("timer");
+  if (t) t.textContent = timerText();
+}, 1000);
+
+render();
+</script>
+</body>
+</html>
