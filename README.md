@@ -1,6 +1,6 @@
 # Gem Store
 
-A one-page loot box demo for COP 4910 Presentation 4. Every player starts with the same 2,000-gem Starter Pack and picks one of two modes:
+A one-page loot box demo for COP 4910 Presentation 4. Every player clicks through a welcome screen, claims the same 2,500-gem Starter Pack, and picks one of two modes:
 
 - **High Roller:** double the Legendary odds, fewer boxes.
 - **Standard:** standard odds, more boxes.
@@ -61,26 +61,32 @@ Put the QR code **and** the plain URL on the cover slide, since some phone camer
 
 - **Reveal code:** `RECEIPT`, and it isn't case-sensitive. Presenter B says it out loud at 3:00. To change it, edit `revealCode` near the top of the script.
 - **One mode per player.** The choice is locked once confirmed. Progress is saved in the browser, so refreshing doesn't reset the phone or let a player switch modes.
-- **One box at a time.** There is no "open all" button. Each tap opens a single box, and rarer pulls shake a little longer.
+- **Welcome screen first.** Players read the rules and wait through a 4-second "preparing your pack" bar before they can claim gems, so they don't pick a mode before you explain it. Change the wait with `welcomeSeconds`.
+- **One box at a time.** There is no "open all" button. Each box shakes for 1.5 seconds, or 2.2 for Rare and better. Change this with `shakeMs`.
+- **No spoilers in the list.** A result stays in the box until the player taps **Open next box**, and only then moves into "Your pulls". After the last box, an **Add to collection** button moves the final result into the list, and then the "So close!" top-up offer appears. A refresh mid-run keeps the result in the box.
 - **To start over** (rehearsals, testing): add `?reset` to the URL, e.g. `https://<you>.github.io/gem-store/?reset`.
 - **The odds really are disclosed,** but only behind the tiny "Probability disclosure" link at the bottom. That's deliberate. At the reveal, ask who tapped it.
 - **The "offer ends" timer is fake.** It restarts every two minutes, and the receipt says so.
 
 ## Numbers the page uses
 
-These match the presentation doc and the slides. All of them are in `CONFIG` at the top of the script. The Starter Pack is 2,000 💎, and its hidden price is $19.99.
+These match the presentation doc and the slides. All of them are in `CONFIG` at the top of the script. The Starter Pack is 2,500 💎, and its hidden price is $24.99.
 
 | | High Roller | Standard |
 | --- | --- | --- |
-| Box price | 850 💎 | 340 💎 |
-| Boxes per pack | 2 | 5 |
-| Gems left over | 300 ($3.00) | 300 ($3.00) |
-| Real cost per box opened | $9.99 | $4.00 |
+| Box price | 770 💎 | 330 💎 |
+| Boxes per pack | 3 | 7 |
+| Gems left over | 190 ($1.90) | 190 ($1.90) |
+| Short of another box by | 580 💎 | 140 💎 |
+| Real cost per box opened | $8.33 | $3.57 |
 | Legendary / Epic / Rare / Common | 1 / 9 / 25 / 65% | 0.5 / 4.5 / 16 / 79% |
-| Chance of at least one Legendary per pack | 2.0% | 2.5% |
-| Average cost of one Legendary | about $1,000 | about $800 |
+| Chance of at least one Legendary per pack | 3.0% | 3.4% |
+| Chance of Epic or better per pack | 27.1% | 30.2% |
+| Average cost of one Legendary | about $833 | about $714 |
 
-High Roller doubles the odds per box but costs 2.5× as much per box, so it **lowers** the chance of a Legendary across a whole pack. That's the twist the receipt reveals.
+High Roller doubles the odds per box but costs about 2.3× as much per box, so it **lowers** the chance of a Legendary across a whole pack. That's the twist the receipt reveals.
+
+The trap only works when High Roller gets fewer than half as many boxes as Standard. With 7 Standard boxes, High Roller must stay at 3. A 4th box, or only 6 Standard boxes, would make High Roller the better deal. Check this if you change `startGems` or either `boxPrice`.
 
 Each box draws a number from 1 to 1,000 using the browser's cryptographic random number generator. A tier wins when the roll is at or below its `max`, checked from Legendary down. If you change the odds, change `max` and `pct` together.
 
