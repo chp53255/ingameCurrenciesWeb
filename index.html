@@ -54,6 +54,7 @@
     background: linear-gradient(145deg, #3a3670, #221f45); border: 2px solid var(--line); text-align: center; padding: 12px; }
   .box.premium { background: linear-gradient(145deg, #6b4e10, #2c2341); border-color: var(--gold); }
   .box .q { font-size: 72px; font-weight: 800; color: var(--muted); }
+  .box.boxdone .q { font-size: 22px; font-weight: 700; }
   .box.premium .q { color: var(--gold); }
   .box.shake { animation: shake .55s ease-in-out infinite; }
   .box.result { animation: pop .35s ease-out; }
@@ -107,6 +108,19 @@
   .sheet .fine { color: var(--muted); font-size: 14px; }
   .sheet .tiny { color: #6f6c92; font-size: 11px; line-height: 1.5; }
 
+  .welcome { text-align: center; padding-top: 18px; }
+  .welcome .logo { font-size: 64px; margin: 6px 0 2px; }
+  .welcome h1 { font-size: 32px; margin: 0 0 8px; }
+  .welcome .lead { color: var(--muted); font-size: 17px; margin: 0 0 22px; line-height: 1.4; }
+  .steps { list-style: none; padding: 0; margin: 0 0 22px; display: flex; flex-direction: column; gap: 10px; text-align: left; }
+  .steps li { display: flex; gap: 14px; align-items: center; background: var(--panel); border: 1px solid var(--line); border-radius: 14px; padding: 14px; font-size: 16px; }
+  .steps .n { flex: 0 0 34px; height: 34px; border-radius: 50%; background: var(--gold); color: var(--bg); font-weight: 800; display: flex; align-items: center; justify-content: center; }
+  .wait { color: var(--gold); font-weight: 700; font-size: 15px; margin: 0 0 14px; }
+  .loadbar { height: 10px; background: var(--panel); border: 1px solid var(--line); border-radius: 999px; overflow: hidden; margin: 0 0 8px; }
+  .loadbar span { display: block; height: 100%; width: 0; background: linear-gradient(90deg, #c9902a, var(--gold)); animation: fill var(--load) linear forwards; }
+  .loadtext { color: var(--muted); font-size: 14px; margin: 0 0 16px; }
+  @keyframes fill { to { width: 100%; } }
+
   /* Receipt */
   .receipt { background: var(--cream); color: var(--bg); border-radius: 18px; padding: 20px 18px; }
   .receipt h1 { color: var(--bg); margin-bottom: 4px; }
@@ -146,15 +160,17 @@
 /* ===== Settings you may want to change ===== */
 const CONFIG = {
   revealCode: "RECEIPT",       // presenters say this out loud at the reveal
-  startGems: 2000,             // every player starts with this many gems...
-  packUSD: 19.99,              // ...which is what this "Starter Pack" costs (hidden until the receipt)
+  startGems: 2500,             // every player starts with this many gems...
+  packUSD: 24.99,              // ...which is what this "Starter Pack" costs (hidden until the receipt)
   timerSeconds: 120,           // fake "offer ends" countdown; silently restarts
+  welcomeSeconds: 4,           // "preparing your pack" wait before the Claim button unlocks
+  shakeMs: { common: 1500, rare: 2200 },  // how long a box shakes; Rare and better shake longer
   topUp: { gems: 500, usd: 4.99 },   // the locked offer shown when gems run out
   // Each mode: price per box in gems, and tiers rolled on 1..1000
   // (a tier wins if the roll is <= its max, checked in this order; pct is for display).
   modes: [
     {
-      id: "high", name: "High Roller", badge: "Premium", pitch: "2× Legendary odds!", featured: true, boxPrice: 850,
+      id: "high", name: "High Roller", badge: "Premium", pitch: "2× Legendary odds!", featured: true, boxPrice: 770,
       tiers: [
         { name: "Legendary", max: 10,   pct: 1 },
         { name: "Epic",      max: 100,  pct: 9 },
@@ -163,7 +179,7 @@ const CONFIG = {
       ]
     },
     {
-      id: "std", name: "Standard", badge: "Classic", pitch: "Standard odds, more boxes", boxPrice: 340,
+      id: "std", name: "Standard", badge: "Classic", pitch: "Standard odds, more boxes", boxPrice: 330,
       tiers: [
         { name: "Legendary", max: 5,    pct: 0.5 },
         { name: "Epic",      max: 50,   pct: 4.5 },
@@ -199,12 +215,12 @@ const CONFIG = {
       { name: "Benjamin Franklin", note: "Founding Father (never President)", img: "img/franklin.jpg" }
     ]
   },
-  storageKey: "gemstore-v3"
+  storageKey: "gemstore-v5"
 };
 const TIER_ORDER = ["Legendary", "Epic", "Rare", "Common"];
 
 /* ===== State (saved so a refresh doesn't reset the run or allow switching modes) ===== */
-function freshState() { return { modeId: null, gems: CONFIG.startGems, opened: [], revealed: false, started: Date.now() }; }
+function freshState() { return { welcomed: false, modeId: null, gems: 0, opened: [], listed: 0, revealed: false, started: Date.now() }; }
 
 function load() {
   try {
@@ -229,9 +245,12 @@ if (new URLSearchParams(location.search).has("reset")) {
 let state = load();
 let busy = false;      // true while a box is opening
 let modal = null;      // null | {kind:"confirm", id} | {kind:"odds"}
-let lastPull = null;   // most recent pull, shown in the box
+// The newest pull stays in the box, out of the list, until the player opens the next box or collects it.
+const hasPending = () => state.opened.length > (state.listed || 0);
+let lastPull = hasPending() ? state.opened[state.opened.length - 1] : null;   // shown in the box
 let shaking = false;
 let revealError = "";
+let welcomeReady = false;  // Claim button unlocks after CONFIG.welcomeSeconds
 
 /* ===== Helpers ===== */
 const $app = document.getElementById("app");
@@ -319,6 +338,28 @@ function revealHTML() {
   </div>`;
 }
 
+function welcomeHTML() {
+  return `
+    <div class="welcome">
+      <div class="brand">GEM STORE</div>
+      <div class="logo" aria-hidden="true">🎁</div>
+      <h1>Welcome to the Gem Store</h1>
+      <p class="lead">Every player gets a free Starter Pack of gems to spend on loot boxes.</p>
+      <ol class="steps">
+        <li><span class="n">1</span><span>Claim your Starter Pack.</span></li>
+        <li><span class="n">2</span><span>Choose a mode. You only get one choice, so <b>listen to your presenters first</b>.</span></li>
+        <li><span class="n">3</span><span>Open your boxes one at a time.</span></li>
+        <li><span class="n">4</span><span>When you’re told the code, enter it to see your receipt.</span></li>
+      </ol>
+      ${welcomeReady
+        ? `<p class="wait">Your pack is ready.</p>`
+        : `<div class="loadbar" style="--load:${CONFIG.welcomeSeconds}s"><span></span></div>
+           <p class="loadtext">Preparing your Starter Pack…</p>`}
+      <button class="cta" data-action="claim" ${welcomeReady ? "" : "disabled"}>Claim ${fmtInt(CONFIG.startGems)} 💎</button>
+    </div>
+    ${fineprintHTML()}`;
+}
+
 function chooseHTML() {
   const cards = CONFIG.modes.map(m => `
     <button class="mode${m.featured ? " featured" : ""}" data-action="pick" data-id="${m.id}">
@@ -346,21 +387,32 @@ function boxHTML(mode) {
       <span class="tier">${lastPull.tier}</span><span class="item">${lastPull.item}</span>
       <span class="note">${lastPull.note}</span></div>`;
   }
+  if (state.opened.length && state.gems < mode.boxPrice) {
+    return `<div class="box boxdone" aria-label="No boxes left"><span class="q">Out of gems</span></div>`;
+  }
   return `<div class="box${premium}" aria-label="Unopened loot box"><span class="q">?</span></div>`;
 }
 
 function openHTML() {
   const m = modeById(state.modeId);
   const canOpen = Math.floor(state.gems / m.boxPrice);
-  const c = counts();
+  const shown = state.opened.slice(0, state.listed || 0);
+  const c = { Legendary: 0, Epic: 0, Rare: 0, Common: 0 };
+  shown.forEach(p => { c[p.tier]++; });
   const chips = TIER_ORDER.filter(t => c[t] > 0).map(t => `<span class="chip ${t}">${t} × ${c[t]}</span>`).join("");
-  const recent = state.opened.slice().reverse()
+  const recent = shown.slice().reverse()
     .map(p => `<li><span class="who"><img src="${p.img}" alt="" onerror="this.remove()"><span class="${p.tier}">${p.item}</span></span><span class="${p.tier}">${p.tier}</span></li>`).join("");
 
   let action;
-  if (canOpen > 0 || busy) {
+  if (busy) {
     action = `<p class="count">${m.name} box · <b>${fmtInt(m.boxPrice)} 💎</b></p>
-      <button class="cta" data-action="open" ${busy ? "disabled" : ""}>${busy ? "Opening…" : "Open box"}</button>`;
+      <button class="cta" disabled>Opening…</button>`;
+  } else if (canOpen > 0) {
+    action = `<p class="count">${m.name} box · <b>${fmtInt(m.boxPrice)} 💎</b> · ${canOpen} left</p>
+      <button class="cta" data-action="open">${state.opened.length ? "Open next box" : "Open box"}</button>`;
+  } else if (hasPending()) {
+    action = `<p class="count">That was your last box.</p>
+      <button class="cta" data-action="collect">Add to collection</button>`;
   } else {
     const need = m.boxPrice - state.gems;
     action = `<div class="hook">
@@ -375,7 +427,7 @@ function openHTML() {
     ${promoHTML()}
     <div class="stage">${boxHTML(m)}</div>
     ${action}
-    ${state.opened.length ? `<h2>Your pulls (${state.opened.length})</h2><div class="tally">${chips}</div><ul class="pulls">${recent}</ul>` : ""}
+    ${shown.length ? `<h2>Your pulls (${shown.length})</h2><div class="tally">${chips}</div><ul class="pulls">${recent}</ul>` : ""}
     ${revealHTML()}
     ${fineprintHTML()}`;
 }
@@ -474,6 +526,7 @@ function modalHTML() {
 function render() {
   let body;
   if (state.revealed) body = receiptHTML();
+  else if (!state.welcomed) body = welcomeHTML();
   else if (!state.modeId) body = chooseHTML();
   else body = openHTML();
   $app.innerHTML = body + modalHTML();
@@ -484,13 +537,15 @@ async function openOne() {
   const m = modeById(state.modeId);
   if (busy || !m || state.gems < m.boxPrice) return;
   busy = true;
+  state.listed = state.opened.length;    // previous result joins the list now
+  lastPull = null;
   state.gems -= m.boxPrice;
   const pull = drawPull(m);
   state.opened.push(pull);
   save();
   if (!reducedMotion()) {
     shaking = true; render();
-    await sleep(pull.tier === "Common" ? 900 : 1400);   // rarer pulls shake longer
+    await sleep(pull.tier === "Common" ? CONFIG.shakeMs.common : CONFIG.shakeMs.rare);   // rarer pulls shake longer
     shaking = false;
   }
   lastPull = pull;
@@ -506,6 +561,14 @@ $app.addEventListener("click", e => {
     // Clicking the dark backdrop closes; clicks inside the sheet don't.
     if (el.classList.contains("modal") && e.target !== el) return;
     modal = null; render();
+  } else if (action === "claim") {
+    if (!welcomeReady || state.welcomed) return;
+    state.welcomed = true;
+    state.gems = CONFIG.startGems;
+    state.started = Date.now();          // the fake countdown starts at the mode screen
+    save(); render(); window.scrollTo(0, 0);
+  } else if (action === "collect") {
+    state.listed = state.opened.length; lastPull = null; save(); render();
   } else if (action === "pick") {
     modal = { kind: "confirm", id: el.dataset.id }; render();
   } else if (action === "choose") {
@@ -545,6 +608,9 @@ setInterval(() => {
   const t = document.getElementById("timer");
   if (t) t.textContent = timerText();
 }, 1000);
+
+// Unlock the Claim button after the "preparing your pack" wait.
+setTimeout(() => { welcomeReady = true; if (!state.welcomed) render(); }, CONFIG.welcomeSeconds * 1000);
 
 // Preload portraits so each reveal shows instantly.
 TIER_ORDER.forEach(t => CONFIG.items[t].forEach(it => { const im = new Image(); im.src = it.img; }));
